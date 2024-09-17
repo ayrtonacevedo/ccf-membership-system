@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+# clave Api
+/src/firebaseConfig/firebase.js
 
 # testing
 /coverage
