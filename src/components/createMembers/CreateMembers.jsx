@@ -28,14 +28,11 @@ const CreateMembers = () => {
   const isValidDni = (dni) => dni.length >= 7 && dni.length <= 8;
   const isValidPhone = (phone) => phone.length >= 10;
 
-  // Convertir fecha a UTC para evitar problemas de zona horaria
-  const toUTCDate = (dateStr) => {
-    const date = new Date(dateStr);
-    const utcDate = new Date(
-      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
-    );
+  // Convertir fecha a Timestamp
 
-    return utcDate;
+  const convertir = (d) => {
+    const date = new Date(d + "T00:00:00"); // Agrega la hora a medianoche
+    return Timestamp.fromDate(date);
   };
 
   // Función para agregar un nuevo socio
@@ -51,17 +48,13 @@ const CreateMembers = () => {
     }
 
     try {
-      // Convertimos las fechas a UTC
-      const startDateUTC = toUTCDate(formData.membershipStartDate);
-      const endDateUTC = toUTCDate(formData.membershipEndDate);
-
       await addDoc(membersCollection, {
         name: formData.name,
         dni: Number(formData.dni),
         phone: Number(formData.phone),
         observaciones: formData.observaciones,
-        membershipStartDate: Timestamp.fromDate(startDateUTC),
-        membershipEndDate: Timestamp.fromDate(endDateUTC),
+        membershipStartDate: convertir(formData.membershipStartDate),
+        membershipEndDate: convertir(formData.membershipEndDate),
       });
       navigate("/"); // Redireccionar al dashboard o lista de socios después de crear
     } catch (error) {

@@ -87,12 +87,15 @@ const MembersDashboard = () => {
       <div className="container">
         <div className="row">
           <div className="col">
-            <div className="d-grid gap-2">
-              <Link to="/createMember" className="btn btn-secondary mt-2 mb-2">
+            <div className="d-flex gap-2 mt-2">
+              <Link to="/createMember" className="btn btn-secondary flex-fill">
                 Create
               </Link>
+              <Link to="/findMember" className="btn btn-primary flex-fill">
+                Find Member
+              </Link>
             </div>
-            <table className="table table-dark table-hover">
+            <table className="table table-dark table-hover mt-2">
               <thead>
                 <tr>
                   <th>Socio</th>

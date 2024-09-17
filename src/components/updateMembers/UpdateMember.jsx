@@ -19,26 +19,32 @@ const UpdateMember = () => {
 
   // Obtener datos del socio por id
   const getMemberById = async () => {
-    const memberDoc = await getDoc(doc(db, "socios", id));
-    if (memberDoc.exists()) {
-      const data = memberDoc.data();
-      setMember({
-        ...data,
-        membershipStartDate: data.membershipStartDate
-          .toDate()
-          .toISOString()
-          .substring(0, 10), // Obtener fecha
-        membershipEndDate: data.membershipEndDate
-          .toDate()
-          .toISOString()
-          .substring(0, 10), // Obtener fecha
-      });
+    try {
+      const memberDoc = await getDoc(doc(db, "socios", id));
+      if (memberDoc.exists()) {
+        const data = memberDoc.data();
+        setMember({
+          ...data,
+          membershipStartDate: data.membershipStartDate
+            .toDate()
+            .toISOString()
+            .substring(0, 10),
+          membershipEndDate: data.membershipEndDate
+            .toDate()
+            .toISOString()
+            .substring(0, 10),
+        });
+      } else {
+        alert("Socio no encontrado.");
+      }
+    } catch (error) {
+      alert("Hubo un problema al obtener los datos del socio.");
     }
   };
 
   useEffect(() => {
     getMemberById();
-  }, []);
+  }, [id]);
 
   // Función para manejar los cambios en los inputs
   const handleInputChange = (e) => {
@@ -49,26 +55,40 @@ const UpdateMember = () => {
   // Función para actualizar los datos del socio en Firestore
   const handleUpdate = async (e) => {
     e.preventDefault();
-    const memberDoc = doc(db, "socios", id);
 
-    // Convertir la fecha seleccionada a las 00:00:00 UTC para evitar desfases de horas
-    const startDate = new Date(member.membershipStartDate);
-    startDate.setUTCHours(0, 0, 0, 0); // Ajustar la hora a medianoche UTC
+    if (member.dni.length < 7 || member.dni.length > 8) {
+      alert("El DNI debe tener entre 7 y 8 dígitos.");
+      return;
+    }
 
-    const endDate = new Date(member.membershipEndDate);
-    endDate.setUTCHours(0, 0, 0, 0); // Ajustar la hora a medianoche UTC
+    if (member.phone.length < 10) {
+      alert("El teléfono debe tener al menos 10 dígitos.");
+      return;
+    }
 
-    // Actualizamos el documento con los datos ingresados y convertimos las fechas a Timestamp
-    await updateDoc(memberDoc, {
-      name: member.name,
-      dni: Number(member.dni),
-      phone: Number(member.phone),
-      observaciones: member.observaciones,
-      membershipStartDate: Timestamp.fromDate(startDate), // Guardar sin horas
-      membershipEndDate: Timestamp.fromDate(endDate), // Guardar sin horas
-    });
+    try {
+      const memberDoc = doc(db, "socios", id);
 
-    navigate("/"); // Redirigir a la lista de miembros después de la actualización
+      // Convertir la fecha seleccionada
+      const convertir = (d) => {
+        const date = new Date(d + "T00:00:00"); // Agrega la hora a medianoche
+        return Timestamp.fromDate(date);
+      };
+
+      // Actualizar el documento en Firestore
+      await updateDoc(memberDoc, {
+        name: member.name,
+        dni: Number(member.dni),
+        phone: Number(member.phone),
+        observaciones: member.observaciones,
+        membershipStartDate: convertir(member.membershipStartDate),
+        membershipEndDate: convertir(member.membershipEndDate),
+      });
+
+      navigate("/"); // Redirigir a la lista de miembros después de la actualización
+    } catch (error) {
+      alert("Hubo un problema al actualizar el socio.");
+    }
   };
 
   return (
