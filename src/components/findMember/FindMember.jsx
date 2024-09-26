@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
+import { Modal, Button } from "react-bootstrap";
 
 const FindMember = () => {
   const [dni, setDni] = useState("");
   const [results, setResults] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
   const navigate = useNavigate();
 
   // Función para formatear la fecha
@@ -45,17 +48,27 @@ const FindMember = () => {
       if (querySnapshot.empty) {
         alert("No se encontraron socios con ese DNI.");
         setResults([]);
+        setShowModal(false);
       } else {
         const foundMembers = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setResults(foundMembers);
+        setSelectedMember(foundMembers[0]); // Mostrar el primer socio encontrado
+        setShowModal(true);
       }
     } catch (error) {
       console.error("Error al buscar socios: ", error);
       alert("Hubo un problema al buscar el socio.");
     }
+  };
+
+  // Función para cerrar el modal
+  const handleClose = () => {
+    setShowModal(false);
+    setDni(""); // Limpiar el campo de búsqueda
+    setSelectedMember(null); // Limpiar el socio seleccionado
   };
 
   return (
@@ -77,51 +90,43 @@ const FindMember = () => {
           Search
         </button>
       </form>
-      {results.length > 0 && (
-        <table className="table table-dark table-hover mt-3">
-          <thead>
-            <tr>
-              <th>Socio</th>
-              <th>Fecha vencimiento</th>
-              <th>Membresia</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {results.map((member) => (
-              <tr key={member.id}>
-                <td>{member.name}</td>
-                <td>{formatDate(member.membershipEndDate)}</td>
-                <td>
-                  {(() => {
-                    const status = getMembershipStatus(
-                      member.membershipEndDate
-                    );
-                    if (status === "active") {
-                      return <span className="badge bg-success">Activa</span>;
-                    } else if (status === "expiring") {
-                      return (
-                        <span className="badge bg-warning">
-                          Por vencer en 3 días
-                        </span>
-                      );
-                    } else {
-                      return <span className="badge bg-danger">Expirada</span>;
-                    }
-                  })()}
-                </td>
-                <td>
-                  <button
-                    className="btn btn-light"
-                    onClick={() => navigate(`/edit/${member.id}`)}
-                  >
-                    <i className="fa-solid fa-user-pen"></i>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+      {selectedMember && (
+        <Modal show={showModal} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Member Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div>
+              <h5>Name: {selectedMember.name}</h5>
+              <p>DNI: {selectedMember.dni}</p>
+              <p>Phone: {selectedMember.phone}</p>
+              <p>Observations: {selectedMember.observaciones}</p>
+              <p>
+                Membership Start Date:{" "}
+                {formatDate(selectedMember.membershipStartDate)}
+              </p>
+              <p>
+                Membership End Date:{" "}
+                {formatDate(selectedMember.membershipEndDate)}
+              </p>
+              <p>
+                Status: {getMembershipStatus(selectedMember.membershipEndDate)}
+              </p>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => navigate(`/edit/${selectedMember.id}`)}
+            >
+              Edit
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
     </div>
   );

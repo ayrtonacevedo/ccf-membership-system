@@ -85,7 +85,7 @@ const UpdateMember = () => {
         membershipEndDate: convertir(member.membershipEndDate),
       });
 
-      navigate("/"); // Redirigir a la lista de miembros después de la actualización
+      navigate("/dashboard"); // Redirigir a la lista de miembros después de la actualización
     } catch (error) {
       alert("Hubo un problema al actualizar el socio.");
     }

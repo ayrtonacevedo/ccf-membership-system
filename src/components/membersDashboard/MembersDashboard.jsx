@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  collection,
-  getDocs,
-  getDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { format } from "date-fns"; // Importa la función de formateo de fechas
+import { Timestamp } from "firebase/firestore";
+
 const MySwal = withReactContent(Swal);
 
 const MembersDashboard = () => {
   // 1- configuramos los hooks
   const [members, setMembers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const membersPerPage = 5;
   // 2- referenciamos a la DB firestore
   const membersCollection = collection(db, "socios");
   // 3- funcion para mostrar TODOS los documentos
@@ -23,6 +21,7 @@ const MembersDashboard = () => {
     const data = await getDocs(membersCollection);
     setMembers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
+
   // 4- Funcion para eleminar un documento
   const deleteMembers = async (id) => {
     const membersDoc = doc(db, "socios", id);
@@ -51,7 +50,6 @@ const MembersDashboard = () => {
   // 6- usamos useEffect
   useEffect(() => {
     getMembers();
-    console.log(members);
   }, []);
 
   //formateo hora de firebase a js
@@ -63,7 +61,11 @@ const MembersDashboard = () => {
   // Función para comparar la fecha actual con membershipEndDate
   // Función para verificar si la membresía está activa, expirada o por vencer
   const getMembershipStatus = (membershipEndDate) => {
-    if (!membershipEndDate) return "expired"; // Si no hay fecha, se considera expirada
+    if (!membershipEndDate) return { status: "expired", daysRemaining: 0 }; // Si no hay fecha, se considera expirada
+
+    if (!(membershipEndDate instanceof Timestamp)) {
+      throw new Error("Invalid membership end date"); // Verificar si es un Timestamp válido
+    }
 
     const currentDate = new Date(); // Fecha actual
     const endDate = membershipEndDate.toDate(); // Convertimos el Timestamp a Date
@@ -73,13 +75,28 @@ const MembersDashboard = () => {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) {
-      return "expired"; // La membresía ya expiró
+      return { status: "expired", daysRemaining: 0 }; // La membresía ya expiró
     } else if (diffDays <= 3) {
-      return "expiring"; // La membresía expira en los próximos 3 días
+      return { status: "expiring", daysRemaining: diffDays }; // La membresía expira en los próximos días
     } else {
-      return "active"; // La membresía está activa
+      return { status: "active", daysRemaining: diffDays }; // La membresía está activa
     }
   };
+  //funciones para manejar la navegacion entre paginas
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(members.length / membersPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  // Calcular los indices de inicio y fin para la paginacion
+  const indexOfLastMember = currentPage * membersPerPage; //Ultimo indice del miembro en la pagina actual
+  const indexOfFirstMember = indexOfLastMember - membersPerPage; // Primer indice del miembro en la pagina actual
+  const currentMembers = members.slice(indexOfFirstMember, indexOfLastMember); // Miemtros a mostrar en la pagina actual
 
   // 7- devolvemos vista de nuestro componente
   return (
@@ -95,6 +112,26 @@ const MembersDashboard = () => {
                 Find Member
               </Link>
             </div>
+            {/*Botones de paginacion arriba*/}
+            <div className="d-flex justify-content-between mb-2 mt-2">
+              <button
+                className="btn btn-primary"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              {/* <span>Página {currentPage}</span> */}
+              <button
+                className="btn btn-primary"
+                onClick={handleNextPage}
+                disabled={
+                  currentPage === Math.ceil(members.length / membersPerPage)
+                }
+              >
+                Siguiente
+              </button>
+            </div>
             <table className="table table-dark table-hover mt-2">
               <thead>
                 <tr>
@@ -105,29 +142,33 @@ const MembersDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {members.map((member) => (
+                {currentMembers.map((member) => (
                   <tr key={member.id}>
                     <td>{member.name}</td>
                     <td>{formatDate(member.membershipEndDate)}</td>
                     <td>
                       {(() => {
-                        const status = getMembershipStatus(
+                        const { status, daysRemaining } = getMembershipStatus(
                           member.membershipEndDate
                         );
-                        if (status === "active") {
-                          return (
-                            <span className="badge bg-success">Activa</span>
-                          );
-                        } else if (status === "expiring") {
-                          return (
-                            <span className="badge bg-warning">
-                              Por vencer en 3 días
-                            </span>
-                          );
-                        } else {
-                          return (
-                            <span className="badge bg-danger">Expirada</span>
-                          );
+                        switch (status) {
+                          case "active":
+                            return (
+                              <span className="badge bg-success">Activa</span>
+                            );
+                          case "expiring":
+                            return (
+                              <span className="badge bg-warning">
+                                Por vencer en {daysRemaining}{" "}
+                                {daysRemaining === 1 ? "día" : "días"}
+                              </span>
+                            );
+                          case "expired":
+                            return (
+                              <span className="badge bg-danger">Expirada</span>
+                            );
+                          default:
+                            return null;
                         }
                       })()}
                     </td>
@@ -148,6 +189,26 @@ const MembersDashboard = () => {
                 ))}
               </tbody>
             </table>
+            {/* Botones de paginación abajo */}
+            <div className="d-flex justify-content-between mt-2 mb-2">
+              <button
+                className="btn btn-primary"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              {/* <span>Página {currentPage}</span> */}
+              <button
+                className="btn btn-primary"
+                onClick={handleNextPage}
+                disabled={
+                  currentPage === Math.ceil(members.length / membersPerPage)
+                }
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </div>
       </div>

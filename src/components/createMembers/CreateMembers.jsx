@@ -56,7 +56,7 @@ const CreateMembers = () => {
         membershipStartDate: convertir(formData.membershipStartDate),
         membershipEndDate: convertir(formData.membershipEndDate),
       });
-      navigate("/"); // Redireccionar al dashboard o lista de socios después de crear
+      navigate("/dashboard"); // Redireccionar al dashboard o lista de socios después de crear
     } catch (error) {
       console.error("Error al crear socio: ", error);
       alert("Hubo un problema al crear el socio.");
