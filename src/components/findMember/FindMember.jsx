@@ -4,6 +4,8 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal, Button } from "react-bootstrap";
 
+import "./findMember.css";
+
 const FindMember = () => {
   const [dni, setDni] = useState("");
   const [results, setResults] = useState([]);
@@ -72,62 +74,96 @@ const FindMember = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Find Member</h2>
-      <form onSubmit={handleSearch}>
-        <div className="mb-3">
-          <label className="form-label">Search by DNI</label>
-          <input
-            type="number"
-            className="form-control"
-            value={dni}
-            onChange={handleDniChange}
-            placeholder="Enter member DNI"
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Search
-        </button>
-      </form>
+    <div className="bg-image">
+      <button
+        className="btn-close btn-css"
+        onClick={() => navigate("/")}
+      ></button>
+      <div className="container-findMember">
+        <h1 className="h1-ingresoCCf">Ingreso CCF</h1>
+        <form onSubmit={handleSearch}>
+          <div className="mb-3">
+            {/* <label className="form-label">Ingrese su DNI</label> */}
+            <input
+              type="text"
+              className="form-control input-buscar"
+              value={dni}
+              onChange={handleDniChange}
+              placeholder="Ingrese su DNI"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary btn-buscarSocio">
+            Buscar
+          </button>
+        </form>
 
-      {selectedMember && (
-        <Modal show={showModal} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Member Details</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div>
-              <h5>Name: {selectedMember.name}</h5>
-              <p>DNI: {selectedMember.dni}</p>
-              <p>Phone: {selectedMember.phone}</p>
-              <p>Observations: {selectedMember.observaciones}</p>
-              <p>
-                Membership Start Date:{" "}
-                {formatDate(selectedMember.membershipStartDate)}
-              </p>
-              <p>
-                Membership End Date:{" "}
-                {formatDate(selectedMember.membershipEndDate)}
-              </p>
-              <p>
-                Status: {getMembershipStatus(selectedMember.membershipEndDate)}
-              </p>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => navigate(`/edit/${selectedMember.id}`)}
-            >
-              Edit
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
+        {selectedMember && (
+          <Modal show={showModal} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Detalles del Socio</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div>
+                <h5>Estado de la Membresía</h5>
+                <div
+                  className={`alert ${
+                    getMembershipStatus(selectedMember.membershipEndDate) ===
+                    "active"
+                      ? "alert-success"
+                      : getMembershipStatus(
+                          selectedMember.membershipEndDate
+                        ) === "expiring"
+                      ? "alert-warning"
+                      : "alert-danger"
+                  }`}
+                >
+                  {getMembershipStatus(selectedMember.membershipEndDate) ===
+                    "active" && <span>¡Tu membresía está activa!</span>}
+                  {getMembershipStatus(selectedMember.membershipEndDate) ===
+                    "expiring" && (
+                    <span>
+                      Atención: tu membresía está por vencer en{" "}
+                      {Math.ceil(
+                        (selectedMember.membershipEndDate.toDate() -
+                          new Date()) /
+                          (1000 * 60 * 60 * 24)
+                      )}
+                      días.
+                    </span>
+                  )}
+                  {getMembershipStatus(selectedMember.membershipEndDate) ===
+                    "expired" && <span>Tu membresía ha expirado.</span>}
+                </div>
+
+                <h5>{selectedMember.name}</h5>
+                <p>DNI: {selectedMember.dni}</p>
+                <p>Teléfono: {selectedMember.phone}</p>
+                <p>Observaciones: {selectedMember.observaciones}</p>
+                <p>
+                  Fecha de Inicio de Membresía:{" "}
+                  {formatDate(selectedMember.membershipStartDate)}
+                </p>
+                <p>
+                  Fecha de Vencimiento de Membresía:{" "}
+                  {formatDate(selectedMember.membershipEndDate)}
+                </p>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Cerrar
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => navigate(`/edit/${selectedMember.id}`)}
+              >
+                Editar
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
+      </div>
     </div>
   );
 };

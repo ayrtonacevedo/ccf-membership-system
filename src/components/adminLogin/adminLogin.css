@@ -1,0 +1,23 @@
+.bgcontainer {
+  background-image: url("../../resources/ccf1.jpg");
+  background-size: cover;
+  background-position: center;
+}
+.title {
+  color: #0e2743;
+}
+.btn-custom.btn {
+  background-color: #1e8880;
+  color: white; /* Cambia el color del texto a blanco para un mejor contraste */
+  border: none; /* Opcional: elimina el borde del botón */
+}
+
+.btn-custom.btn:hover {
+  background-color: #155e56; /* Un tono más oscuro para el efecto hover */
+}
+.card-custom.card {
+  background-color: #27a06f; /* Color de fondo */
+  border-radius: 10px; /* Opción: añade bordes redondeados */
+  padding: 20px; /* Espaciado interno */
+  width: 400px;
+}

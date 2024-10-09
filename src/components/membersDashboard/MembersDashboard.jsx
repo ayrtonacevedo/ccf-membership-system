@@ -10,25 +10,26 @@ import { Timestamp } from "firebase/firestore";
 const MySwal = withReactContent(Swal);
 
 const MembersDashboard = () => {
-  // 1- configuramos los hooks
   const [members, setMembers] = useState([]);
+  const [loanding, setLoanding] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const membersPerPage = 5;
-  // 2- referenciamos a la DB firestore
   const membersCollection = collection(db, "socios");
-  // 3- funcion para mostrar TODOS los documentos
+  // funcion para mostrar TODOS los documentos
   const getMembers = async () => {
+    setLoanding(true); // inicia la carga
     const data = await getDocs(membersCollection);
     setMembers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    setLoanding(false);
   };
 
-  // 4- Funcion para eleminar un documento
+  // Funcion para eleminar un documento
   const deleteMembers = async (id) => {
     const membersDoc = doc(db, "socios", id);
     await deleteDoc(membersDoc);
-    getMembers();
+    setMembers(members.filter((member) => member.id !== id));
   };
-  // 5- Funcion de configuracion para Sweet Alert
+  // Funcion de configuracion para Sweet Alert
   const confirmDelete = (id) => {
     MySwal.fire({
       title: "Eliminar Socio?",
@@ -47,9 +48,9 @@ const MembersDashboard = () => {
       }
     });
   };
-  // 6- usamos useEffect
   useEffect(() => {
     getMembers();
+    console.log("hola");
   }, []);
 
   //formateo hora de firebase a js
@@ -57,7 +58,7 @@ const MembersDashboard = () => {
     if (!timestamp) return "";
     return format(timestamp.toDate(), "dd/MM/yyyy");
   };
-  // comparo fecha actual con membershipEndDate
+
   // Función para comparar la fecha actual con membershipEndDate
   // Función para verificar si la membresía está activa, expirada o por vencer
   const getMembershipStatus = (membershipEndDate) => {
@@ -98,120 +99,163 @@ const MembersDashboard = () => {
   const indexOfFirstMember = indexOfLastMember - membersPerPage; // Primer indice del miembro en la pagina actual
   const currentMembers = members.slice(indexOfFirstMember, indexOfLastMember); // Miemtros a mostrar en la pagina actual
 
-  // 7- devolvemos vista de nuestro componente
   return (
     <>
-      <div className="container">
-        <div className="row">
-          <div className="col">
-            <div className="d-flex gap-2 mt-2">
-              <Link to="/createMember" className="btn btn-secondary flex-fill">
-                Create
-              </Link>
-              <Link to="/findMember" className="btn btn-primary flex-fill">
-                Find Member
-              </Link>
-            </div>
-            {/*Botones de paginacion arriba*/}
-            <div className="d-flex justify-content-between mb-2 mt-2">
-              <button
-                className="btn btn-primary"
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-              >
-                Anterior
-              </button>
-              {/* <span>Página {currentPage}</span> */}
-              <button
-                className="btn btn-primary"
-                onClick={handleNextPage}
-                disabled={
-                  currentPage === Math.ceil(members.length / membersPerPage)
-                }
-              >
-                Siguiente
-              </button>
-            </div>
-            <table className="table table-dark table-hover mt-2">
-              <thead>
-                <tr>
-                  <th>Socio</th>
-                  <th>Fecha vencimiento</th>
-                  <th>Membresia</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentMembers.map((member) => (
-                  <tr key={member.id}>
-                    <td>{member.name}</td>
-                    <td>{formatDate(member.membershipEndDate)}</td>
-                    <td>
-                      {(() => {
-                        const { status, daysRemaining } = getMembershipStatus(
-                          member.membershipEndDate
-                        );
-                        switch (status) {
-                          case "active":
-                            return (
-                              <span className="badge bg-success">Activa</span>
-                            );
-                          case "expiring":
-                            return (
-                              <span className="badge bg-warning">
-                                Por vencer en {daysRemaining}{" "}
-                                {daysRemaining === 1 ? "día" : "días"}
-                              </span>
-                            );
-                          case "expired":
-                            return (
-                              <span className="badge bg-danger">Expirada</span>
-                            );
-                          default:
-                            return null;
-                        }
-                      })()}
-                    </td>
-                    <td>
-                      <Link to={`/edit/${member.id}`} className="btn btn-light">
-                        <i className="fa-solid fa-user-pen"></i>
-                      </Link>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => {
-                          confirmDelete(member.id);
-                        }}
-                      >
-                        <i className="fa-solid fa-trash"></i>
-                      </button>
-                    </td>
+      {loanding ? (
+        <p>Cargando...</p>
+      ) : (
+        <div className="container">
+          <div className="row">
+            <div className="col">
+              <div className="d-flex gap-2 mt-2">
+                <Link
+                  to="/createMember"
+                  className="btn"
+                  style={{ backgroundColor: "#02732A", color: "#F2F2F2" }} // Verde intenso
+                >
+                  Agregar Socio
+                </Link>
+                <Link
+                  to="/findMember"
+                  className="btn"
+                  style={{ backgroundColor: "#023059", color: "#F2F2F2" }} // Azul profundo
+                >
+                  Control de Ingreso
+                </Link>
+              </div>
+              {/* Botones de paginación arriba */}
+              <div className="d-flex justify-content-between mb-2 mt-2">
+                <button
+                  className="btn"
+                  style={{ backgroundColor: "#012840", color: "#F2F2F2" }} // Azul marino
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 1}
+                >
+                  Anterior
+                </button>
+                <button
+                  className="btn"
+                  style={{ backgroundColor: "#012840", color: "#F2F2F2" }} // Azul marino
+                  onClick={handleNextPage}
+                  disabled={
+                    currentPage === Math.ceil(members.length / membersPerPage)
+                  }
+                >
+                  Siguiente
+                </button>
+              </div>
+              <table className="table table-dark table-hover mt-2">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Fecha vencimiento</th>
+                    <th>Membresía</th>
+                    <th>Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            {/* Botones de paginación abajo */}
-            <div className="d-flex justify-content-between mt-2 mb-2">
-              <button
-                className="btn btn-primary"
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-              >
-                Anterior
-              </button>
-              {/* <span>Página {currentPage}</span> */}
-              <button
-                className="btn btn-primary"
-                onClick={handleNextPage}
-                disabled={
-                  currentPage === Math.ceil(members.length / membersPerPage)
-                }
-              >
-                Siguiente
-              </button>
+                </thead>
+                <tbody>
+                  {currentMembers.map((member) => (
+                    <tr key={member.id}>
+                      <td>{member.name}</td>
+                      <td>{formatDate(member.membershipEndDate)}</td>
+                      <td>
+                        {(() => {
+                          const { status, daysRemaining } = getMembershipStatus(
+                            member.membershipEndDate
+                          );
+                          switch (status) {
+                            case "active":
+                              return (
+                                <span
+                                  className="badge"
+                                  style={{ backgroundColor: "#02732A" }}
+                                >
+                                  {" "}
+                                  {/* Verde intenso */}
+                                  Activa
+                                </span>
+                              );
+                            case "expiring":
+                              return (
+                                <span
+                                  className="badge"
+                                  style={{ backgroundColor: "#0F5929" }}
+                                >
+                                  {" "}
+                                  {/* Verde oscuro */}
+                                  Por vencer en {daysRemaining}{" "}
+                                  {daysRemaining === 1 ? "día" : "días"}
+                                </span>
+                              );
+                            case "expired":
+                              return (
+                                <span
+                                  className="badge"
+                                  style={{ backgroundColor: "#C62828" }}
+                                >
+                                  {" "}
+                                  {/* Color rojo por expirada */}
+                                  Expirada
+                                </span>
+                              );
+                            default:
+                              return null;
+                          }
+                        })()}
+                      </td>
+                      <td>
+                        <Link
+                          to={`/edit/${member.id}`}
+                          className="btn"
+                          style={{
+                            backgroundColor: "#F2F2F2",
+                            color: "#023059",
+                          }} // Blanco suculento con texto azul profundo
+                        >
+                          <i className="fa-solid fa-user-pen"></i>
+                        </Link>
+                        <button
+                          className="btn"
+                          style={{
+                            backgroundColor: "#C62828",
+                            color: "#F2F2F2",
+                          }} // Rojo para eliminar
+                          onClick={() => {
+                            confirmDelete(member.id);
+                          }}
+                        >
+                          <i className="fa-solid fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* Botones de paginación abajo */}
+              <div className="d-flex justify-content-between mt-2 mb-2">
+                <button
+                  className="btn"
+                  style={{ backgroundColor: "#012840", color: "#F2F2F2" }} // Azul marino
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 1}
+                >
+                  Anterior
+                </button>
+                <button
+                  className="btn"
+                  style={{ backgroundColor: "#012840", color: "#F2F2F2" }} // Azul marino
+                  onClick={handleNextPage}
+                  disabled={
+                    currentPage === Math.ceil(members.length / membersPerPage)
+                  }
+                >
+                  Siguiente
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

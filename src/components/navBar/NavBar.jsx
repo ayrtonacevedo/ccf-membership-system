@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebaseConfig/firebase";
+import logo from "../../resources/ccf2.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   const handleLogout = async () => {
     try {
@@ -16,36 +22,53 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav
+      className="navbar navbar-expand-lg"
+      style={{ backgroundColor: "#023059" }}
+    >
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/dashboard">
-          Dashboard
+        <Link to="/">
+          <img
+            src={logo}
+            alt="logo"
+            style={{ width: "150px", height: "50px" }}
+          />
         </Link>
         <button
           className="navbar-toggler"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
+        <div
+          className={`collapse navbar-collapse ${isOpen ? "show" : ""}`}
+          id="navbarNav"
+        >
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/createMember">
+              <Link className="nav-link text-light" to="/dashboard">
+                Dashboard
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link className="nav-link text-light" to="/createMember">
                 Create Member
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/findMember">
+              <Link className="nav-link text-light" to="/findMember">
                 Find Member
               </Link>
             </li>
             <li className="nav-item">
-              <button className="btn btn-outline-light" onClick={handleLogout}>
+              <button
+                className="btn"
+                onClick={handleLogout}
+                style={{ backgroundColor: "#02732A", color: "#F2F2F2" }} // Verde intenso
+              >
                 Logout
               </button>
             </li>

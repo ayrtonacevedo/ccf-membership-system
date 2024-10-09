@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebaseConfig/firebase";
+import { useAuth } from "../../context/AuthContext";
 
 const PrivateRoute = ({ children }) => {
-  const [user, loading] = useAuthState(auth); // Añadimos el estado `loading`
+  const { user, loading } = useAuth();
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false); // Estado para controlar si se verificó la autenticación
+
+  useEffect(() => {
+    if (!loading) {
+      setHasCheckedAuth(true); // Marca como verificado una vez que se haya cargado
+    }
+  }, [loading]);
 
   if (loading) {
-    // Mostrar el indicador de carga mientras verifica la autenticación
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <p>Cargando...</p>
@@ -15,12 +20,14 @@ const PrivateRoute = ({ children }) => {
     );
   }
 
+  if (!hasCheckedAuth) {
+    return null; // Si aún no se ha verificado la autenticación, no renderizar nada
+  }
+
   if (!user) {
-    // Si no hay usuario autenticado, redirigir a la página de login
     return <Navigate to="/adminLogin" />;
   }
 
-  // Si el usuario está autenticado, renderizar el contenido protegido
   return children;
 };
 

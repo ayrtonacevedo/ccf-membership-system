@@ -1,0 +1,60 @@
+.bg-image {
+  position: relative;
+  background-image: url("../../resources/ccf.png");
+  background-position: center;
+  background-size: cover;
+  background-color: #0e2743;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-css.btn-close {
+  position: absolute;
+  top: 10px; /* Ajusta el espacio desde la parte superior */
+  right: 10px; /* Ajusta el espacio desde la derecha */
+  z-index: 1000; /* Asegura que el botón esté por encima de otros elementos */
+  opacity: 0; /* Oculto por defecto */
+  transition: opacity 0.3s ease; /* Transición suave para la opacidad */
+}
+
+/* Cambia este selector */
+.btn-css.btn-close:hover {
+  opacity: 1; /* Muestra el botón al pasar el mouse sobre el contenedor */
+}
+
+.container-findMember {
+  background-color: #f2f2f2e1;
+  border-radius: 5px;
+  width: 400px;
+  padding: 5px;
+}
+.h1-ingresoCCf {
+  color: #0e2743; /* Color principal de texto */
+  font-size: 2.5rem; /* Tamaño grande para destacar el título */
+  font-weight: bold; /* Para que el título resalte */
+  text-align: center; /* Centrado horizontalmente */
+  margin-bottom: 20px; /* Espacio inferior para separar del contenido siguiente */
+}
+
+.form-label {
+  color: #1e8880;
+}
+.input-buscar.form-control {
+  border-color: #27a06f; /* Color del borde */
+  height: 50px; /* Altura más grande */
+  font-size: 1.2rem; /* Texto más grande */
+  padding: 10px; /* Espaciado interno más amplio */
+  border-radius: 8px; /* Bordes ligeramente redondeados */
+}
+
+.btn-buscarSocio.btn {
+  background-color: #27a06f; /* Verde intenso */
+  border-color: #27a06f; /* Verde intenso */
+  color: #f2f2f2;
+}
+
+.btn-buscarSocio.btn:hover {
+  background-color: #1e8880; /* Verde azulado */
+}

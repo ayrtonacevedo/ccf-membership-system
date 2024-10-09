@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Timestamp } from "firebase/firestore";
+import "./createMembers.css";
 
 const CreateMembers = () => {
   const [formData, setFormData] = useState({
@@ -64,77 +65,91 @@ const CreateMembers = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container-createMembers">
       <div className="row">
         <div className="col">
-          <h1>Crear Socio</h1>
+          <h1 className="h1-agregarSocio">Agregar Socio</h1>
           <form onSubmit={createMember}>
-            <div className="mb-2">
-              <label className="form-label">Nombre</label>
-              <input
-                type="text"
-                name="name"
-                className="form-control"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
+            <div className="d-flex justify-content-between">
+              <div className="mb-2 me-2 " style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">Nombre</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="form-control input-agregarSocio"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-2 me-2" style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">DNI</label>
+                <input
+                  type="number"
+                  name="dni"
+                  className="form-control input-agregarSocio"
+                  value={formData.dni}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-2 me-2" style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">
+                  Teléfono
+                </label>
+                <input
+                  type="number"
+                  name="phone"
+                  className="form-control input-agregarSocio"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
             <div className="mb-2">
-              <label className="form-label">DNI</label>
-              <input
-                type="number"
-                name="dni"
-                className="form-control"
-                value={formData.dni}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-2">
-              <label className="form-label">Teléfono</label>
-              <input
-                type="number"
-                name="phone"
-                className="form-control"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-2">
-              <label className="form-label">Observaciones</label>
+              <label className="form-label label-agregarSocio">
+                Observaciones
+              </label>
               <textarea
                 name="observaciones"
-                className="form-control"
+                className="form-control input-agregarSocio"
                 value={formData.observaciones}
                 onChange={handleChange}
               />
             </div>
-            <div className="mb-2">
-              <label className="form-label">Fecha de Inicio de Membresía</label>
-              <input
-                type="date"
-                name="membershipStartDate"
-                className="form-control"
-                value={formData.membershipStartDate}
-                onChange={handleChange}
-                required
-              />
+            <div className="d-flex justify-content-between">
+              <div className="mb-2 me-2" style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">
+                  Fecha de Inicio de Membresía
+                </label>
+                <input
+                  type="date"
+                  name="membershipStartDate"
+                  className="form-control input-agregarSocio"
+                  value={formData.membershipStartDate}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-2" style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">
+                  Fecha de Fin de Membresía
+                </label>
+                <input
+                  type="date"
+                  name="membershipEndDate"
+                  className="form-control input-agregarSocio"
+                  value={formData.membershipEndDate}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-            <div className="mb-2">
-              <label className="form-label">Fecha de Fin de Membresía</label>
-              <input
-                type="date"
-                name="membershipEndDate"
-                className="form-control"
-                value={formData.membershipEndDate}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Crear Socio
+
+            <button type="submit" className="btn btn-primary btn-agregar">
+              Agregar
             </button>
           </form>
         </div>

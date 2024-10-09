@@ -8,67 +8,68 @@ import AdminLogin from "./components/adminLogin/AdminLogin";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import Layout from "./layout/Layout";
 import Home from "./components/home/Home";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          {/* Ruta pública para el login */}
-          <Route path="/adminLogin" element={<AdminLogin />} />
-          {/* Rutas protegidas */}
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <Home />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <MembersDashboard />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/createMember"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <CreateMembers />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/edit/:id"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <UpdateMember />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/findMember"
-            element={
-              <PrivateRoute>
-                <Layout>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Ruta pública para el login */}
+            <Route path="/adminLogin" element={<AdminLogin />} />
+            {/* Rutas protegidas */}
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Home />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <MembersDashboard />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/createMember"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <CreateMembers />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <UpdateMember />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/findMember"
+              element={
+                <PrivateRoute>
                   <FindMember />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
