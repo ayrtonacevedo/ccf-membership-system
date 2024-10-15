@@ -42,9 +42,9 @@ const UpdateMember = () => {
     }
   };
 
-  useEffect(() => {
-    getMemberById();
-  }, [id]);
+  // useEffect(() => {
+  //   getMemberById();
+  // }, [id]);
 
   // Función para manejar los cambios en los inputs
   const handleInputChange = (e) => {

@@ -1,15 +1,18 @@
-import React, { useEffect } from "react";
-import { seedMembersInBD } from "../../data/seedMembers.js";
+import React from "react";
+import { saveMembersToFirebase } from "../../data/members.seeder";
 
 const Home = () => {
-  // useEffect(() => {
-  //   const initializeDatabase = async () => {
-  //     await seedMembersInBD();
-  //   };
-  //   initializeDatabase();
-  // }, []);
-  // El array vacío asegura que esto se ejecute solo una vez al montar el componente.
-  return <div>Home</div>;
+  const handleSaveMembers = () => {
+    saveMembersToFirebase();
+  };
+  return (
+    <div>
+      {/* <button className="btn btn-primary" onClick={handleSaveMembers}>
+        La magia
+      </button> */}
+      home
+    </div>
+  );
 };
 
 export default Home;

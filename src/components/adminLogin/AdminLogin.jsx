@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import "./adminLogin.css";
 
 const AdminLogin = () => {
-  const { user, loading } = useAuth();
+  // const { user, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -24,8 +24,8 @@ const AdminLogin = () => {
   };
 
   // Redirigir si ya está autenticado
-  if (loading) return <p>Cargando...</p>;
-  if (user) navigate("/dashboard");
+  // if (loading) return <p>Cargando...</p>;
+  // if (user) navigate("/dashboard");
 
   return (
     <div className="bgcontainer">

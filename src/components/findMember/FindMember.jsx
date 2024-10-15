@@ -77,7 +77,7 @@ const FindMember = () => {
     <div className="bg-image">
       <button
         className="btn-close btn-css"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/dashboard")}
       ></button>
       <div className="container-findMember">
         <h1 className="h1-ingresoCCf">Ingreso CCF</h1>
