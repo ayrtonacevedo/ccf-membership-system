@@ -1,4 +1,11 @@
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 
 //ACTIONS TYPES
@@ -15,7 +22,8 @@ export const fetchMembers = () => {
     dispatch({ type: FETCH_MEMBERS_START });
     try {
       const membersCollection = collection(db, "socios");
-      const data = await getDocs(membersCollection);
+      const orderedQuery = query(membersCollection, orderBy("name"));
+      const data = await getDocs(orderedQuery);
       const members = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       dispatch({
         type: FETCH_MEMBERS_SUCCESS,

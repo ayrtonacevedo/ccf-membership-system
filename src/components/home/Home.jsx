@@ -1,16 +1,14 @@
 import React from "react";
-import { saveMembersToFirebase } from "../../data/members.seeder";
+import { Spinners } from "../spinners/Spinners";
+// import { saveMembersToFirebase } from "../../data/members.seeder";
 
 const Home = () => {
-  const handleSaveMembers = () => {
-    saveMembersToFirebase();
-  };
+  // const handleSaveMembers = () => {
+  //   saveMembersToFirebase();
+  // };
   return (
     <div>
-      {/* <button className="btn btn-primary" onClick={handleSaveMembers}>
-        La magia
-      </button> */}
-      home
+      <Spinners></Spinners>
     </div>
   );
 };

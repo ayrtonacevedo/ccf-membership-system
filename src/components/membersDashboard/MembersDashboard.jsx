@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMembers, deleteMember } from "../../redux/actions";
 import { Link } from "react-router-dom";
+import { Spinners } from "../spinners/Spinners";
 import {
   formatDate,
   getMembershipStatus,
@@ -13,10 +14,11 @@ const MembersDashboard = () => {
 
   const members = useSelector((state) => state.members);
   const loading = useSelector((state) => state.loading);
+
   const error = useSelector((state) => state.error);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const membersPerPage = 5;
+  const membersPerPage = 7;
 
   // useEffect(() => {
   //   dispatch(fetchMembers());
@@ -47,8 +49,10 @@ const MembersDashboard = () => {
   const handleDeleteMember = (id) => {
     confirmDelete(() => dispatch(deleteMember(id))); // Usar deleteMember aquí
   };
-
-  if (loading) return <p>Cargando...</p>;
+  const refresh = () => {
+    dispatch(fetchMembers());
+  };
+  if (loading) return <Spinners />;
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -71,6 +75,13 @@ const MembersDashboard = () => {
               >
                 Control de Ingreso
               </Link>
+              {/* <button
+                className="btn"
+                style={{ backgroundColor: "#02732A", color: "#F2F2F2" }}
+                onClick={refresh}
+              >
+                Refresh
+              </button> */}
             </div>
 
             {/* Botones de paginación arriba */}
@@ -128,7 +139,7 @@ const MembersDashboard = () => {
                             return (
                               <span
                                 className="badge"
-                                style={{ backgroundColor: "#0F5929" }}
+                                style={{ backgroundColor: "#BDAE00" }}
                               >
                                 Por vencer en {daysRemaining}{" "}
                                 {daysRemaining === 1 ? "día" : "días"}

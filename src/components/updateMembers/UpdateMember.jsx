@@ -42,9 +42,9 @@ const UpdateMember = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getMemberById();
-  // }, [id]);
+  useEffect(() => {
+    getMemberById();
+  }, [id]);
 
   // Función para manejar los cambios en los inputs
   const handleInputChange = (e) => {
@@ -92,77 +92,94 @@ const UpdateMember = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Edit Member</h2>
-      <form onSubmit={handleUpdate}>
-        <div className="form-group">
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            className="form-control"
-            value={member.name}
-            onChange={handleInputChange}
-            required
-          />
+    <div className="container-createMembers">
+      <div className="row">
+        <div className="col">
+          <h1 className="h1-agregarSocio">Editar Socio</h1>
+          <form onSubmit={handleUpdate}>
+            <div className="d-flex justify-content-between">
+              <div className="mb-2 me-2 " style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">Nombre</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="form-control input-agregarSocio"
+                  value={member.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="mb-2 me-2" style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">DNI</label>
+                <input
+                  type="number"
+                  name="dni"
+                  className="form-control input-agregarSocio"
+                  value={member.dni}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="mb-2 me-2" style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">
+                  Telefono
+                </label>
+                <input
+                  type="number"
+                  name="phone"
+                  className="form-control input-agregarSocio"
+                  value={member.phone}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="mb-2">
+              <label className="form-label label-agregarSocio">
+                Observaciones
+              </label>
+              <textarea
+                name="observaciones"
+                className="form-control input-agregarSocio"
+                value={member.observaciones}
+                onChange={handleInputChange}
+              ></textarea>
+            </div>
+            <div className="d-flex justify-content-between">
+              <div className="mb-2 me-2" style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">
+                  Fecha de Inicio de Membresía
+                </label>
+                <input
+                  type="date"
+                  name="membershipStartDate"
+                  className="form-control input-agregarSocio"
+                  value={member.membershipStartDate}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-2" style={{ flex: 1 }}>
+                <label className="form-label label-agregarSocio">
+                  Fecha de Fin de Membresía
+                </label>
+                <input
+                  type="date"
+                  name="membershipEndDate"
+                  className="form-control input-agregarSocio"
+                  value={member.membershipEndDate}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            <button type="submit" className="btn btn-primary btn-agregar">
+              Actualizar Socio
+            </button>
+          </form>
         </div>
-        <div className="form-group">
-          <label>DNI:</label>
-          <input
-            type="number"
-            name="dni"
-            className="form-control"
-            value={member.dni}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Phone:</label>
-          <input
-            type="number"
-            name="phone"
-            className="form-control"
-            value={member.phone}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Observaciones:</label>
-          <textarea
-            name="observaciones"
-            className="form-control"
-            value={member.observaciones}
-            onChange={handleInputChange}
-          ></textarea>
-        </div>
-        <div className="form-group">
-          <label>Membership Start Date:</label>
-          <input
-            type="date"
-            name="membershipStartDate"
-            className="form-control"
-            value={member.membershipStartDate}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Membership End Date:</label>
-          <input
-            type="date"
-            name="membershipEndDate"
-            className="form-control"
-            value={member.membershipEndDate}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary mt-3">
-          Update Member
-        </button>
-      </form>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,11 @@
+.custom-spinner.spinner-border {
+  width: 5rem; /* Ajusta el tamaño del spinner */
+  height: 5rem;
+  border-width: 0.4rem; /* Ajusta el grosor del borde */
+}
+.containerSpinners {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
