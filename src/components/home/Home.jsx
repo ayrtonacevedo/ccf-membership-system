@@ -1,5 +1,5 @@
 import React from "react";
-import { Spinners } from "../spinners/Spinners";
+import UploadImage from "../uploadImage/UploadImage";
 // import { saveMembersToFirebase } from "../../data/members.seeder";
 
 const Home = () => {
@@ -8,7 +8,7 @@ const Home = () => {
   // };
   return (
     <div>
-      <Spinners></Spinners>
+      <UploadImage />
     </div>
   );
 };
