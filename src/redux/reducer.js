@@ -4,6 +4,10 @@ import {
   FETCH_MEMBERS_FAILURE,
   DELETE_MEMBER_SUCCESS,
   DELETE_MEMBER_FAILURE,
+  ADD_MEMBER_SUCCESS,
+  ADD_MEMBER_FAILURE,
+  UPLOAD_IMAGE_SUCCESS,
+  UPLOAD_IMAGE_FAILURE,
 } from "./actions";
 
 //INITIAL STATE
@@ -11,6 +15,7 @@ const initialState = {
   members: [],
   loading: false,
   error: null,
+  imageUrl: null,
 };
 export default function rootReducer(state = initialState, action) {
   switch (action.type) {
@@ -38,6 +43,26 @@ export default function rootReducer(state = initialState, action) {
         members: state.members.filter((member) => member.id !== action.payload),
       };
     case DELETE_MEMBER_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case ADD_MEMBER_SUCCESS:
+      return {
+        ...state,
+        members: [...state.members, action.payload],
+      };
+    case ADD_MEMBER_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case UPLOAD_IMAGE_SUCCESS:
+      return {
+        ...state,
+        imageUrl: action.payload,
+      };
+    case UPLOAD_IMAGE_FAILURE:
       return {
         ...state,
         error: action.payload,

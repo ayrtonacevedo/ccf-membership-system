@@ -1,16 +1,29 @@
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { storage } from "../../firebaseConfig/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { uploadImage } from "../../redux/actions";
 import imgProfile from "../../resources/profile.png";
 
 function UploadImage() {
+  const dispatch = useDispatch();
+  const imageUrl = useSelector((state) => state.imageUrl);
+
   const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(imgProfile);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const [preview, setPreview] = useState(imgProfile);
 
   // Esta función maneja el cambio en el input de archivo
   const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]); // Guardamos el archivo de imagen seleccionado
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file); // Guardamos el archivo de imagen seleccionado
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      setError(null);
     }
   };
   const handleUpload = () => {
@@ -18,47 +31,61 @@ function UploadImage() {
       alert("Por favor, selecciona una imagen primero");
       return;
     }
-    // Crear una referencia en la carpeta imgProfile
-    const storageRef = ref(storage, `imgProfile/${image.name}`);
-
-    // Subir la imagen
-    uploadBytes(storageRef, image)
-      .then(() => {
-        //Obtener la Url de descarga de la imagen
-        return getDownloadURL(storageRef);
-      })
-      .then((url) => {
-        console.log("imagen subida con exito.URL:", url);
-        setImageUrl(url); //guarda la url en el estado si deseas usarla mas tarde
-      })
-      .catch((error) => {
-        console.log("error al subir la imagen", error);
-      });
+    setUploading(true);
+    dispatch(uploadImage(image));
+    setImage(null);
+    setUploading(false);
   };
 
   return (
-    <div>
-      {image ? (
-        <img
-          src={image}
-          alt="Uploaded Preview"
-          style={{ width: "200px", height: "auto", marginBottom: "10px" }}
-        />
-      ) : (
-        <img
-          src={imageUrl}
-          alt="Uploaded Preview"
-          style={{ width: "200px", height: "auto", marginBottom: "10px" }}
-        />
-      )}
+    <div className="container mt-4">
+      <div className="row justify-content-center">
+        <div className="col-md-4 text-center">
+          <div className="card p-4">
+            {preview && (
+              <img
+                src={preview} // Usa la URL de la imagen desde el estado
+                alt="Uploaded Preview"
+                className="img-thumbnail mb-3"
+                style={{ width: "150px", height: "auto" }}
+              />
+            )}
 
-      <input type="file" onChange={handleImageChange} />
+            <div className="mb-3">
+              <input
+                type="file"
+                accept="image/*"
+                className="form-control"
+                onChange={handleImageChange}
+              />
+            </div>
 
-      {image && <p>Imagen seleccionada: {image.name}</p>}
+            {/* {image && (
+              <p className="text-secondary">
+                Imagen seleccionada: {image.name}
+              </p>
+            )} */}
 
-      <button onClick={handleUpload}>Subir Imagen</button>
+            <button
+              onClick={handleUpload}
+              disabled={uploading}
+              className="btn btn-primary"
+            >
+              {uploading ? "Subiendo..." : "Subir Imagen"}
+            </button>
 
-      {imageUrl && <p>URL de la imagen: {imageUrl}</p>}
+            {uploading && (
+              <p className="text-info mt-3">
+                Subiendo imagen, por favor espera...
+              </p>
+            )}
+            {error && <p className="text-danger mt-3">{error}</p>}
+            {imageUrl && (
+              <p className="text-success mt-3">URL de la imagen: {imageUrl}</p>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
