@@ -8,6 +8,7 @@ import {
   ADD_MEMBER_FAILURE,
   UPLOAD_IMAGE_SUCCESS,
   UPLOAD_IMAGE_FAILURE,
+  CLEAR_IMAGE_URL,
 } from "./actions";
 
 //INITIAL STATE
@@ -66,6 +67,11 @@ export default function rootReducer(state = initialState, action) {
       return {
         ...state,
         error: action.payload,
+      };
+    case CLEAR_IMAGE_URL:
+      return {
+        ...state,
+        imageUrl: null, // Limpiar el estado de imageUrl
       };
 
     default:

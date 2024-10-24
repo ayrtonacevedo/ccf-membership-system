@@ -137,6 +137,7 @@ const FindMember = () => {
                 </div>
 
                 <h5>{selectedMember.name}</h5>
+                <img src={selectedMember.img} alt="imgprofile" />
                 <p>DNI: {selectedMember.dni}</p>
                 <p>Teléfono: {selectedMember.phone}</p>
                 <p>Observaciones: {selectedMember.observaciones}</p>

@@ -23,6 +23,8 @@ export const ADD_MEMBER_FAILURE = "ADD_MEMBER_FAILURE";
 //AddImg
 export const UPLOAD_IMAGE_SUCCESS = "UPLOAD_IMAGE_SUCCESS";
 export const UPLOAD_IMAGE_FAILURE = "UPLOAD_IMAGE_FAILURE";
+//Clear imgUrl
+export const CLEAR_IMAGE_URL = "CLEAR_IMAGE_URL";
 
 //GET MEMBERS
 export const fetchMembers = () => {
@@ -89,11 +91,17 @@ export const uploadImage = (image) => {
         type: UPLOAD_IMAGE_SUCCESS,
         payload: url,
       });
+      return url;
     } catch (error) {
       dispatch({
         type: UPLOAD_IMAGE_FAILURE,
         payload: error.message,
       });
     }
+  };
+};
+export const clearImageUrl = () => {
+  return {
+    type: CLEAR_IMAGE_URL,
   };
 };
