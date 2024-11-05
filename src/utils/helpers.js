@@ -10,6 +10,17 @@ export const formatDate = (timestamp) => {
   if (!timestamp) return "";
   return format(timestamp.toDate(), "dd/MM/yyyy");
 };
+
+export const formatTimestampToDate = (timestamp) => {
+  if (!timestamp || !timestamp.toDate) return "";
+  return timestamp.toDate().toISOString().substring(0, 10);
+};
+
+export const formatTimestampToLocaleDate = (timestamp) => {
+  const date = timestamp.toDate(); // Convierte el Timestamp a un objeto Date
+  return date.toLocaleDateString(); // Devuelve la fecha en formato legible
+};
+
 // function convert Date to Timestamp
 export const convertDateToTimestamp = (d) => {
   const date = new Date(d + "T00:00:00");
@@ -18,24 +29,20 @@ export const convertDateToTimestamp = (d) => {
 // Function to check membership status
 export const getMembershipStatus = (membershipEndDate) => {
   if (!membershipEndDate) return { status: "expired", daysRemaining: 0 };
-
-  if (!(membershipEndDate instanceof Timestamp)) {
-    throw new Error("Invalid membership end date");
+  // if (!(membershipEndDate instanceof Timestamp)) {
+  //   throw new Error("Invalid membership end date");
+  // }
+  const currentDate = new Date();
+  const endDate = membershipEndDate.toDate();
+  const diffTime = endDate - currentDate;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  if (diffDays <= 0) {
+    return { status: "expired", daysRemaining: 0 };
   }
-
-  const currentDate = new Date(); // Current Date
-  const endDate = membershipEndDate.toDate(); //we convert the timestamp into date
-
-  //// We calculate the difference in milliseconds and convert it to days
-  const difftime = endDate - currentDate;
-  const diffDays = Math.ceil(difftime / (1000 * 60 * 60 * 24));
-  if (diffDays < 0) {
-    return { status: "expired", daysRemaining: 0 }; // Membership has already expired
-  } else if (diffDays <= 3) {
-    return { status: "expiring", daysRemaining: diffDays }; // Membership expires in the next few days
-  } else {
-    return { status: "active", daysRemaining: diffDays }; // Membership is active
+  if (diffDays <= 5) {
+    return { status: "expiring", daysRemaining: diffDays };
   }
+  return { status: "active", daysRemaining: diffDays };
 };
 
 //fuction confirmDelete

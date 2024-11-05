@@ -6,17 +6,19 @@ import {
   DELETE_MEMBER_FAILURE,
   ADD_MEMBER_SUCCESS,
   ADD_MEMBER_FAILURE,
-  UPLOAD_IMAGE_SUCCESS,
-  UPLOAD_IMAGE_FAILURE,
-  CLEAR_IMAGE_URL,
+  FETCH_MEMBER_SUCCESS,
+  FETCH_MEMBER_FAILURE,
+  UPDATE_MEMBER_SUCCESS,
+  UPDATE_MEMBER_FAILURE,
+  CLEAR_MEMBER,
 } from "./actions";
 
 //INITIAL STATE
 const initialState = {
   members: [],
+  member: null,
   loading: false,
   error: null,
-  imageUrl: null,
 };
 export default function rootReducer(state = initialState, action) {
   switch (action.type) {
@@ -58,20 +60,36 @@ export default function rootReducer(state = initialState, action) {
         ...state,
         error: action.payload,
       };
-    case UPLOAD_IMAGE_SUCCESS:
+    case FETCH_MEMBER_SUCCESS:
       return {
         ...state,
-        imageUrl: action.payload,
+        member: action.payload,
+        loading: false,
+        error: null,
       };
-    case UPLOAD_IMAGE_FAILURE:
+    case FETCH_MEMBER_FAILURE:
       return {
         ...state,
+        loading: false,
         error: action.payload,
       };
-    case CLEAR_IMAGE_URL:
+    case UPDATE_MEMBER_SUCCESS:
       return {
         ...state,
-        imageUrl: null, // Limpiar el estado de imageUrl
+        loading: false,
+        error: action.payload,
+      };
+    case UPDATE_MEMBER_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case CLEAR_MEMBER:
+      return {
+        ...state,
+        member: null,
       };
 
     default:

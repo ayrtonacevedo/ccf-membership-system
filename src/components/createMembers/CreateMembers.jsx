@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { addMember, uploadImage, clearImageUrl } from "../../redux/actions";
-import { useDispatch, useSelector } from "react-redux";
+import { addMember, uploadImage } from "../../redux/actions";
+import { useDispatch } from "react-redux";
 import { convertDateToTimestamp } from "../../utils/helpers";
 import img from "../../resources/profileCCf.png";
 import "./createMembers.css";
@@ -9,6 +9,8 @@ import "./createMembers.css";
 const CreateMembers = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -23,13 +25,11 @@ const CreateMembers = () => {
   const [image, setImage] = useState(null);
   const [fileName, setFileName] = useState("Seleccionar imagen");
   const [preview, setPreview] = useState(img);
-  const imageUrl = useSelector((state) => state.imageUrl);
 
   // Manejo de cambios en los inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    console.log(formData);
   };
 
   // Validación adicional para DNI y teléfono
@@ -66,7 +66,7 @@ const CreateMembers = () => {
       alert("Por favor, selecciona una imagen primero");
       return;
     }
-
+    setLoading(true);
     try {
       // Sube la imagen y obtiene la URL
       const imageUrl = await dispatch(uploadImage(image));
@@ -87,8 +87,6 @@ const CreateMembers = () => {
 
         // Despacha la acción para agregar el socio
         dispatch(addMember(memberData));
-        // Limpiar el estado imageUrl para futuras cargas
-        dispatch(clearImageUrl());
 
         // Redirige al dashboard
         navigate("/dashboard");
@@ -98,11 +96,28 @@ const CreateMembers = () => {
     } catch (error) {
       console.error("Error al crear socio: ", error);
       alert("Hubo un problema al crear el socio.");
+    } finally {
+      setLoading(false); // Asegura que loading se desactive
     }
   };
 
   return (
-    <div className="container-createMembers">
+    <div className="container-createMembers position-relative">
+      <button
+        // Usa navigate para volver al home
+        className="btn btn-link"
+        style={{
+          fontSize: "1.5rem",
+          color: "#1E8880",
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+        }}
+        onClick={() => navigate("/")}
+        aria-label="Volver al Home"
+      >
+        <i className="bi bi-x-circle"></i>
+      </button>
       <div className="row">
         <div className="col">
           <h1 className="h1-agregarSocio">Agregar Socio</h1>
@@ -211,11 +226,13 @@ const CreateMembers = () => {
                 </div>
                 <button
                   type="submit"
-                  className="mt-3 btn btn-primary
+                  className="mt-5  btn btn-primary
                 btn-agregar"
+                  disabled={loading}
                 >
-                  Agregar
+                  {loading ? "Agregando socio..." : "Agregar socio"}
                 </button>
+                {loading && <p>Cargando, por favor espera...</p>}
               </div>
             </div>
           </form>

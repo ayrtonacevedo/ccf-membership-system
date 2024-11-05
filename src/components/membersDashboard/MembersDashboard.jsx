@@ -23,12 +23,12 @@ const MembersDashboard = () => {
   // useEffect(() => {
   //   dispatch(fetchMembers());
   // }, [dispatch]);
-  // useEffect(() => {
-  //   if (members.length === 0) {
-  //     console.log("actions");
-  //     dispatch(fetchMembers());
-  //   }
-  // }, [dispatch, members.length]);
+  useEffect(() => {
+    if (members.length === 0) {
+      console.log("actions");
+      dispatch(fetchMembers());
+    }
+  }, [dispatch, members.length]);
 
   //funciones para manejar la navegacion entre paginas
   const handleNextPage = () => {
