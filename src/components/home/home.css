@@ -1,0 +1,79 @@
+.home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 75vh;
+}
+.card-link {
+  text-decoration: none;
+  color: inherit; /* Mantiene el color del texto en el enlace */
+}
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card_image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transform: scale(1.15);
+  transition: opacity 0.25s, transform 0.35s;
+}
+
+.card:hover .card_image {
+  opacity: 0.5;
+  transform: scale(1);
+}
+
+.card_body {
+  position: absolute;
+  inset: 0;
+  padding: 50px;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 15px;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(-25px);
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.card:hover .card_body {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card_body::before {
+  content: "";
+  position: absolute;
+  inset: 20px;
+  border: 2px solid #fff;
+  opacity: 0;
+  transform: scale(1.25);
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.card:hover .card_body::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.card_title {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.card:hover .card_title {
+  opacity: 1;
+}

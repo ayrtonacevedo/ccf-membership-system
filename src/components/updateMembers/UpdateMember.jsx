@@ -116,7 +116,7 @@ const UpdateMember = () => {
       const success = await dispatch(updateMember(id, updatedFormData));
       if (success) {
         dispatch(clearMember());
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (error) {
       console.error("Error al actualizar el socio: ", error);

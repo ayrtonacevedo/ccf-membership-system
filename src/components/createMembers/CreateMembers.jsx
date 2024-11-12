@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addMember, uploadImage } from "../../redux/actions";
 import { useDispatch } from "react-redux";
-import { convertDateToTimestamp } from "../../utils/helpers";
+import {
+  convertDateToTimestamp,
+  isValidDni,
+  isValidPhone,
+} from "../../utils/helpers";
 import img from "../../resources/profileCCf.png";
 import "./createMembers.css";
 
@@ -11,7 +15,7 @@ const CreateMembers = () => {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
-
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     dni: "",
@@ -32,9 +36,6 @@ const CreateMembers = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Validación adicional para DNI y teléfono
-  const isValidDni = (dni) => dni.length >= 7 && dni.length <= 8;
-  const isValidPhone = (phone) => phone.length >= 10;
   // Función para manejar el cambio de imagen
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -52,52 +53,55 @@ const CreateMembers = () => {
   // Función para agregar un nuevo socio
   const createMember = async (e) => {
     e.preventDefault();
-
-    // Validaciones de DNI y teléfono
+    //Validaciones
     if (!isValidDni(formData.dni)) {
-      alert("El DNI debe tener entre 7 y 8 dígitos.");
+      setError("El DNI debe tener entre 7 y 8 digitos");
       return;
     }
     if (!isValidPhone(formData.phone)) {
-      alert("El teléfono debe tener al menos 10 dígitos.");
-      return;
-    }
-    if (!image) {
-      alert("Por favor, selecciona una imagen primero");
+      setError("El teléfono debe tener al menos 10 dígitos.");
       return;
     }
     setLoading(true);
+    setError(""); // Limpiar cualquier error previo
     try {
-      // Sube la imagen y obtiene la URL
-      const imageUrl = await dispatch(uploadImage(image));
-
-      if (imageUrl) {
-        // Crea los datos del nuevo socio incluyendo la URL de la imagen
-        const memberData = {
-          name: formData.name,
-          dni: Number(formData.dni),
-          phone: Number(formData.phone),
-          observaciones: formData.observaciones,
-          membershipStartDate: convertDateToTimestamp(
-            formData.membershipStartDate
-          ),
-          membershipEndDate: convertDateToTimestamp(formData.membershipEndDate),
-          img: imageUrl, // Asigna la URL de la imagen al campo img
-        };
-
-        // Despacha la acción para agregar el socio
-        dispatch(addMember(memberData));
-
-        // Redirige al dashboard
-        navigate("/dashboard");
-      } else {
-        throw new Error("No se pudo obtener la URL de la imagen");
+      // si se ha se seleccionado una imagen, se sube. Si no, asignamos un valor null
+      let imageUrl = null;
+      if (image) {
+        imageUrl = await handleImageUpload();
       }
+      // Datos del nuevo socio
+      const memberData = {
+        name: formData.name,
+        dni: Number(formData.dni),
+        phone: Number(formData.phone),
+        observaciones: formData.observaciones,
+        membershipStartDate: convertDateToTimestamp(
+          formData.membershipStartDate
+        ),
+        membershipEndDate: convertDateToTimestamp(formData.membershipEndDate),
+        img: imageUrl || null, // Asigna null si no se cargó una imagen
+      };
+      //agrega al socio
+      await dispatch(addMember(memberData));
+      //redirecciona al home
     } catch (error) {
-      console.error("Error al crear socio: ", error);
-      alert("Hubo un problema al crear el socio.");
+      console.error("Error al crear socio:", error);
+      setError("Hubo un problema al crear el socio");
     } finally {
-      setLoading(false); // Asegura que loading se desactive
+      setLoading(false);
+      navigate("/");
+    }
+  };
+  // subir img y obtener URL
+  const handleImageUpload = async () => {
+    if (!image) return null;
+    try {
+      return await dispatch(uploadImage(image));
+    } catch (error) {
+      console.error("Error al subir la imagen:", error);
+      setError("Hubo un problema al subir la imagen");
+      return null;
     }
   };
 
@@ -121,6 +125,7 @@ const CreateMembers = () => {
       <div className="row">
         <div className="col">
           <h1 className="h1-agregarSocio">Agregar Socio</h1>
+          {error && <div className="alert alert-danger">{error}</div>}
           <form onSubmit={createMember}>
             <div className="row d-flex">
               <div className="row col-md-3 d-flex justify-content-center align-items-center">

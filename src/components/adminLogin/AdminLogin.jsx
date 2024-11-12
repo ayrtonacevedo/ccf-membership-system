@@ -17,7 +17,7 @@ const AdminLogin = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       setError("Error al iniciar sesión: " + error.message);
     }

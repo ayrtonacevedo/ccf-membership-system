@@ -61,20 +61,6 @@ const MembersDashboard = () => {
         <div className="row">
           <div className="col">
             <div className="d-flex gap-2 mt-2">
-              <Link
-                to="/createMember"
-                className="btn"
-                style={{ backgroundColor: "#02732A", color: "#F2F2F2" }} // Verde intenso
-              >
-                Agregar Socio
-              </Link>
-              <Link
-                to="/findMember"
-                className="btn"
-                style={{ backgroundColor: "#023059", color: "#F2F2F2" }} // Azul profundo
-              >
-                Control de Ingreso
-              </Link>
               {/* <button
                 className="btn"
                 style={{ backgroundColor: "#02732A", color: "#F2F2F2" }}

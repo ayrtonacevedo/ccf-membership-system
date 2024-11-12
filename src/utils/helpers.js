@@ -63,3 +63,7 @@ export const confirmDelete = (deleteFunction, id) => {
     }
   });
 };
+// validaciones dni, phone
+export const isValidDni = (dni) => dni && /^\d{7,8}$/.test(dni);
+
+export const isValidPhone = (phone) => phone && /^\d{10,}$/.test(phone);
