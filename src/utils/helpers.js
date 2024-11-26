@@ -28,20 +28,30 @@ export const convertDateToTimestamp = (d) => {
 };
 // Function to check membership status
 export const getMembershipStatus = (membershipEndDate) => {
-  if (!membershipEndDate) return { status: "expired", daysRemaining: 0 };
-  // if (!(membershipEndDate instanceof Timestamp)) {
-  //   throw new Error("Invalid membership end date");
-  // }
-  const currentDate = new Date();
-  const endDate = membershipEndDate.toDate();
-  const diffTime = endDate - currentDate;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  if (diffDays <= 0) {
+  if (!membershipEndDate) {
     return { status: "expired", daysRemaining: 0 };
   }
+
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0); // Ajustar a inicio del día
+  const endDate = new Date(membershipEndDate.toDate());
+  endDate.setHours(0, 0, 0, 0); // Ajustar a inicio del día
+
+  const diffTime = endDate - currentDate;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    return { status: "expired", daysRemaining: 0 };
+  }
+
+  if (diffDays === 0) {
+    return { status: "expiring", daysRemaining: 0 }; // Vence hoy
+  }
+
   if (diffDays <= 5) {
     return { status: "expiring", daysRemaining: diffDays };
   }
+
   return { status: "active", daysRemaining: diffDays };
 };
 
@@ -67,3 +77,9 @@ export const confirmDelete = (deleteFunction, id) => {
 export const isValidDni = (dni) => dni && /^\d{7,8}$/.test(dni);
 
 export const isValidPhone = (phone) => phone && /^\d{10,}$/.test(phone);
+
+// paginacion
+export function paginate(items, currentPage, pageSize) {
+  const startIndex = (currentPage - 1) * pageSize;
+  return items.slice(startIndex, startIndex + pageSize);
+}

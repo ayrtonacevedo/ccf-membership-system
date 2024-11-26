@@ -80,41 +80,92 @@ const UpdateMember = () => {
       return "DNI debe tener entre 7 y 8 dígitos.";
     if (formData.phone.length < 10)
       return "Teléfono debe tener al menos 10 dígitos.";
-    if (!image && !member.img) return "Por favor, selecciona una imagen.";
-    return null;
+    // if (!image && !member.img) return "Por favor, selecciona una imagen.";
+    // return null;
   };
   // Función para actualizar los datos del socio en Firestore
+  // const handleUpdate = async (e) => {
+  //   e.preventDefault();
+  //   const error = validateForm();
+  //   if (error) return alert(error);
+  //   setUpdating(true);
+  //   // comprobar si se necesita subir imagen
+  //   let updatedFormData = { ...formData }; // Copia de formData
+  //   if (!member.img) {
+  //     if (!image) {
+  //       alert("Por favor, selecciona una imagen primero");
+  //       setUpdating(false);
+  //       return;
+  //     }
+  //     try {
+  //       // sube img y obtiene url
+  //       const imageUrl = await dispatch(uploadImage(image));
+  //       if (imageUrl) {
+  //         updatedFormData.img = imageUrl;
+  //       } else {
+  //         throw new Error("No se pudo obtener la URL de la imagen");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error al subir la imagen: ", error);
+  //       alert("Hubo un problema al subir la imagen.");
+  //       setUpdating(false);
+  //       return; // Detener la ejecución si hay un error
+  //     }
+  //   }
+  //   try {
+  //     const success = await dispatch(updateMember(id, updatedFormData));
+  //     if (success) {
+  //       dispatch(clearMember());
+  //       navigate("/");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error al actualizar el socio: ", error);
+  //     alert("Hubo un problema al actualizar el socio.");
+  //   } finally {
+  //     setUpdating(false);
+  //   }
+  // };
   const handleUpdate = async (e) => {
     e.preventDefault();
+
+    // Validar el formulario
     const error = validateForm();
-    if (error) return alert(error);
+    if (error) {
+      alert(error);
+      return;
+    }
+
     setUpdating(true);
-    // comprobar si se necesita subir imagen
-    let updatedFormData = { ...formData }; // Copia de formData
-    if (!member.img) {
-      if (!image) {
-        alert("Por favor, selecciona una imagen primero");
-        setUpdating(false);
-        return;
-      }
+
+    // Copiar los datos actuales del formulario
+    let updatedFormData = { ...formData };
+
+    // Si el socio ya tiene una imagen, no hacer nada con la imagen
+    if (member.img) {
+      updatedFormData.img = member.img; // Mantener la imagen existente si ya la tiene
+    } else if (image) {
+      // Si no tiene imagen y se seleccionó una nueva imagen
       try {
-        // sube img y obtiene url
+        // Subir la nueva imagen
         const imageUrl = await dispatch(uploadImage(image));
         if (imageUrl) {
           updatedFormData.img = imageUrl;
         } else {
-          throw new Error("No se pudo obtener la URL de la imagen");
+          throw new Error("No se pudo obtener la URL de la imagen.");
         }
       } catch (error) {
         console.error("Error al subir la imagen: ", error);
         alert("Hubo un problema al subir la imagen.");
         setUpdating(false);
-        return; // Detener la ejecución si hay un error
+        return;
       }
     }
+
     try {
+      // Actualizar el socio en Firebase con los datos del formulario
       const success = await dispatch(updateMember(id, updatedFormData));
       if (success) {
+        // alert("Socio actualizado con éxito.");
         dispatch(clearMember());
         navigate("/");
       }

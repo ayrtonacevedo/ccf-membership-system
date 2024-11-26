@@ -1,7 +1,7 @@
 import React from "react";
-import imgAddMember from "../../resources/addMember.jpg";
-import imgAllMember from "../../resources/allMember.jpg";
-import imgControlIngreso from "../../resources/controlIngreso.jpg";
+import imgAddMember from "../../resources/addMember.webp";
+import imgAllMember from "../../resources/allMember.webp";
+import imgControlIngreso from "../../resources/controlIngreso.webp";
 import { Link } from "react-router-dom";
 import "./home.css";
 const Home = () => {

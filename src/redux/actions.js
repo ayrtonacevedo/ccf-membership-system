@@ -169,3 +169,84 @@ export const updateMember = (id, memberData) => {
 export const clearMember = () => ({
   type: CLEAR_MEMBER,
 });
+
+// socios activos
+export const getActiveMembers = (currentDate) => async (dispatch) => {
+  try {
+    // Crear una consulta para obtener los socios activos (fechaVencimiento > fecha actual)
+    const sociosRef = collection(db, "socios");
+    const q = query(sociosRef, where("membershipEndDate", ">=", currentDate));
+
+    // Ejecutar la consulta
+    const querySnapshot = await getDocs(q);
+
+    //convertir los datos de los documentos a un  formato adecuado
+    const activeMembers = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    // despachar los datos de los socios activos al estado global de redux
+    dispatch({
+      type: "SET_ACTIVE_MEMBERS",
+      payload: activeMembers,
+    });
+  } catch (error) {
+    console.error("Error al obtener socios activos", error);
+  }
+};
+//Socios vencidos
+export const getExpiredMembers = (currentDate) => async (dispatch) => {
+  try {
+    //Crear una consulta para obtener los socios vencidos (fechaVencimineto < fecha actual)
+    const sociosRef = collection(db, "socios");
+    const q = query(sociosRef, where("membershipEndDate", "<", currentDate));
+    //ejecutar la consulta
+    const querySnapshot = await getDocs(q);
+    //convertir los datos de los documentos a un  formato adecuado
+    const expiredMembers = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    // despachar los datos de los socios activos al estado global de redux
+    dispatch({
+      type: "SET_EXPIRED_MEMBERS",
+      payload: expiredMembers,
+    });
+  } catch (error) {
+    console.error("Error al obtener vencidos activos", error.message);
+  }
+};
+// Socios por vencer
+export const getExpiringSoonMembers = (currentDate) => async (dispatch) => {
+  try {
+    const fiveDaysFromNow = new Date(currentDate);
+    fiveDaysFromNow.setDate(currentDate.getDate() + 5); // fecha actual + 5 Dias
+    // Crear una consulta para obtener todos los socios
+    //Normalizar la fecha actual para que solo incluya año, mes y dia (sin hr)
+    const currentDateNormalized = new Date(currentDate.setHours(0, 0, 0, 0));
+    const fiveDaysFromNowNormalized = new Date(
+      fiveDaysFromNow.setHours(0, 0, 0, 0)
+    );
+
+    const sociosRef = collection(db, "socios");
+    const q = query(
+      sociosRef,
+      where("membershipEndDate", ">=", currentDateNormalized),
+      where("membershipEndDate", "<=", fiveDaysFromNowNormalized)
+    );
+
+    // Ejecutar la consulta
+    const querySnapshot = await getDocs(q);
+    const expiringMembers = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    // despacho la acction
+    dispatch({
+      type: "SET_EXPIRING_MEMBERS",
+      payload: expiringMembers,
+    });
+  } catch (error) {
+    console.error("Error al obtener socios por vencer pronto", error.message);
+  }
+};

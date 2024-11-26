@@ -5,6 +5,7 @@ import CreateMembers from "./components/createMembers/CreateMembers";
 import UpdateMember from "./components/updateMembers/UpdateMember";
 import FindMember from "./components/findMember/FindMember";
 import AdminLogin from "./components/adminLogin/AdminLogin";
+import ListadoMembers from "./components/listadoMembers/ListadoMembers";
 import ProtectedRoute from "./components/privateRoute/ProtectedRoute"; // Asegúrate de que esta línea sea correcta
 import Home from "./components/home/Home";
 import { AuthProvider } from "./context/AuthContext";
@@ -21,7 +22,7 @@ function App() {
             <Route path="/" element={<ProtectedRoute element={<Home />} />} />
             <Route
               path="/dashboard"
-              element={<ProtectedRoute element={<MembersDashboard />} />}
+              element={<ProtectedRoute element={<ListadoMembers />} />}
             />
             <Route
               path="/createMember"

@@ -19,6 +19,10 @@ const initialState = {
   member: null,
   loading: false,
   error: null,
+  currentDate: null,
+  activeMembers: [],
+  expiredMembers: [],
+  expiringMembers: [],
 };
 export default function rootReducer(state = initialState, action) {
   switch (action.type) {
@@ -90,6 +94,25 @@ export default function rootReducer(state = initialState, action) {
       return {
         ...state,
         member: null,
+        activeMembers: [],
+        expiredMembers: [],
+        expiringMembers: [],
+      };
+
+    case "SET_ACTIVE_MEMBERS":
+      return {
+        ...state,
+        activeMembers: action.payload,
+      };
+    case "SET_EXPIRED_MEMBERS":
+      return {
+        ...state,
+        expiredMembers: action.payload,
+      };
+    case "SET_EXPIRING_MEMBERS":
+      return {
+        ...state,
+        expiringMembers: action.payload,
       };
 
     default:

@@ -33,7 +33,9 @@ const FindMember = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (dni.length !== 8) {
-      setErrorMessage("El DNI debe tener 8 dígitos.");
+      setErrorMessage(
+        "Por favor, asegúrate de ingresar un DNI válido de 8 dígitos."
+      );
       return;
     }
     setLoading(true);
@@ -45,7 +47,7 @@ const FindMember = () => {
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        setErrorMessage("No se encontraron socios con ese DNI!");
+        setErrorMessage("No encontramos ningún socio con ese DNI.");
         setMember([]); // Cambiado para indicar "sin resultados"
         setDni(""); // Limpiar el campo de búsqueda
         setShowModal(false);
@@ -78,7 +80,7 @@ const FindMember = () => {
         onClick={() => navigate("/")}
       ></button>
       <div className="container-findMember">
-        <h1 className="h1-ingresoCCf">Ingreso CCF</h1>
+        <h1 className="h1-ingresoCCf">Membership System</h1>
         <form onSubmit={handleSearch}>
           <div className="mb-3">
             <input
@@ -99,7 +101,12 @@ const FindMember = () => {
           </button>
         </form>
         {errorMessage && (
-          <div className="alert alert-danger" role="alert">
+          <div className="custom-alert-warning" role="alert">
+            <i
+              class="bi bi-exclamation-octagon-fill fs-1 "
+              style={{ color: "white" }}
+            ></i>
+
             <span className="statusMembership">{errorMessage}</span>
           </div>
         )}
@@ -183,10 +190,15 @@ const FindMember = () => {
                             Tu membresía está activa!
                           </span>
                         )}
-                        {status === "expiring" && (
+                        {status === "expiring" && daysRemaining > 0 && (
                           <span className="statusMembership">
                             Tu membresía está por vencer en {daysRemaining}{" "}
-                            días!
+                            {daysRemaining === 1 ? "día" : "días"}!
+                          </span>
+                        )}
+                        {status === "expiring" && daysRemaining === 0 && (
+                          <span className="statusMembership">
+                            ¡Tu membresía expira hoy!
                           </span>
                         )}
                         {status === "expired" && (
