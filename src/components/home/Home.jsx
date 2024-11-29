@@ -1,7 +1,7 @@
 import React from "react";
-import imgAddMember from "../../resources/addMember.webp";
-import imgAllMember from "../../resources/allMember.webp";
-import imgControlIngreso from "../../resources/controlIngreso.webp";
+import centerImg from "../../resources/centerImg.webp";
+import rightImg from "../../resources/rightImg.webp";
+import leftImg from "../../resources/leftImg.webp";
 import { Link } from "react-router-dom";
 import "./home.css";
 const Home = () => {
@@ -9,19 +9,19 @@ const Home = () => {
     {
       id: 1,
       name: "Control Ingreso",
-      img: imgControlIngreso,
+      img: leftImg,
       url: "/findMember",
     },
     {
       id: 2,
       name: "Agregar Socio",
-      img: imgAddMember,
+      img: centerImg,
       url: "/createMember",
     },
     {
       id: 3,
       name: "Lista Socios",
-      img: imgAllMember,
+      img: rightImg,
       url: "/dashboard",
     },
   ];

@@ -31,7 +31,7 @@ const Navbar = () => {
           <img
             src={logo}
             alt="logo"
-            style={{ width: "150px", height: "50px" }}
+            style={{ width: "290px", height: "50px" }}
           />
         </Link>
         <button
