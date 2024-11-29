@@ -31,7 +31,7 @@ const Navbar = () => {
           <img
             src={logo}
             alt="logo"
-            style={{ width: "150px", height: "50px" }}
+            style={{ width: "290px", height: "50px" }}
           />
         </Link>
         <button
@@ -49,18 +49,18 @@ const Navbar = () => {
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
               <Link className="nav-link text-light" to="/dashboard">
-                Dashboard
+                Lista Socios
               </Link>
             </li>
 
             <li className="nav-item">
               <Link className="nav-link text-light" to="/createMember">
-                Create Member
+                Agregar Socio
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link text-light" to="/findMember">
-                Find Member
+                Ingreso
               </Link>
             </li>
             <li className="nav-item">
@@ -69,7 +69,7 @@ const Navbar = () => {
                 onClick={handleLogout}
                 style={{ backgroundColor: "#02732A", color: "#F2F2F2" }} // Verde intenso
               >
-                Logout
+                Cerrar Sesion
               </button>
             </li>
           </ul>

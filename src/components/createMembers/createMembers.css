@@ -24,3 +24,21 @@
 .input-agregarSocio.form-control {
   border-color: #27a06f; /* Verde intenso */
 }
+.icon-label {
+  display: flex;
+  align-items: center; /* Alinear verticalmente */
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-label i {
+  padding-right: 2%;
+  /* Espacio entre el ícono y el texto */
+}
+.icon-label:hover {
+  color: #1e8880;
+}
+.imgProfile {
+  max-width: 250px;
+  max-width: 366px;
+}

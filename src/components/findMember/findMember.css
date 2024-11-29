@@ -28,6 +28,10 @@
   background-color: #f2f2f2e1;
   border-radius: 5px;
   width: 400px;
+  /* height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; */
   padding: 5px;
 }
 .h1-ingresoCCf {
@@ -57,4 +61,61 @@
 
 .btn-buscarSocio.btn:hover {
   background-color: #1e8880; /* Verde azulado */
+}
+.custom-modal-body {
+  background-color: rgb(255, 255, 255); /* Fondo blanco */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
+}
+.custom-modal-header .modal-title {
+  font-size: 1.5rem;
+
+  font-weight: bold;
+}
+.nameDate {
+  margin-bottom: 12px;
+}
+.nameDate p {
+  margin: 0px;
+  font-size: 1.4rem;
+  color: black; /* Color de texto */
+  font-weight: 600;
+}
+.nameDate strong {
+  margin: 0;
+  color: #27a06f;
+}
+.statusMembership {
+  color: white;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+.alert-success {
+  background-color: #27a06f !important; /* Fondo verde para alerta activa */
+  border-color: #004c2d !important; /* Borde del mismo color */
+}
+
+.alert-warning {
+  background-color: #ffb030 !important; /* Fondo amarillo/naranja para alerta de advertencia */
+  border-color: #ff9f00 !important; /* Borde del mismo color */
+}
+
+.alert-danger {
+  background-color: #e30a17 !important; /* Fondo rojo para alerta de expiración */
+  border-color: #c2000d !important; /* Borde del mismo color */
+}
+.spinner-container {
+  min-height: 400px; /* Ajusta la altura según sea necesario */
+}
+.custom-alert-warning {
+  margin-top: 5px;
+  background-color: #ff3131; /* Fondo suave */
+  border-color: #f30606; /* Borde cálido */
+  color: #8a6d3b; /* Texto con tono amigable */
+  font-size: 1rem; /* Texto más legible */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 15px; /* Espaciado interno */
+  display: flex; /* Alineación de ícono y texto */
+  align-items: center;
+  gap: 10px; /* Separación entre ícono y texto */
 }

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebaseConfig/firebase";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import "./adminLogin.css";
+import Logo from "../../resources/ccf2.png";
 
 const AdminLogin = () => {
-  const { user, loading } = useAuth();
+  // const { user, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,21 +17,22 @@ const AdminLogin = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/findMember");
+      navigate("/");
     } catch (error) {
       setError("Error al iniciar sesión: " + error.message);
     }
   };
 
   // Redirigir si ya está autenticado
-  if (loading) return <p>Cargando...</p>;
-  if (user) navigate("/dashboard");
+  // if (loading) return <p>Cargando...</p>;
+  // if (user) navigate("/dashboard");
 
   return (
     <div className="bgcontainer">
       <div className="container d-flex justify-content-center align-items-center vh-100">
-        <div className=" card card-custom p-4">
-          <h3 className="text-center mb-4 title">CCF System</h3>
+        <div className="card card-custom p-4">
+          {/* <h3 className="text-center mb-4 title">CCF System</h3> */}
+          <img src={Logo} alt="CCF Membership System" className="mb-1" />
           {error && <p className="text-danger">{error}</p>}
           <form onSubmit={handleLogin}>
             <div className="mb-3">

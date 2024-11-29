@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { Spinners } from "../spinners/Spinners";
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -14,9 +15,10 @@ const PrivateRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <p>Cargando...</p>
-      </div>
+      // <div className="d-flex justify-content-center align-items-center vh-100">
+      //   <p>Cargando...</p>{" "}
+      // </div>
+      <Spinners />
     );
   }
 
@@ -25,10 +27,10 @@ const PrivateRoute = ({ children }) => {
   }
 
   if (!user) {
-    return <Navigate to="/adminLogin" />;
+    return <Navigate to="/adminLogin" />; // Redirigir si no hay usuario autenticado
   }
 
-  return children;
+  return children; // Renderizar los hijos si hay usuario autenticado
 };
 
 export default PrivateRoute;
