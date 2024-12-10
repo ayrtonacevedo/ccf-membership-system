@@ -14,6 +14,7 @@ import {
 } from "../../utils/helpers";
 import "./listadoMembers.css";
 import { Link } from "react-router-dom";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 const ListadoMembers = () => {
   const dispatch = useDispatch();
@@ -56,8 +57,26 @@ const ListadoMembers = () => {
   }, [dispatch]);
 
   // function delete Member
-  const handleDeleteMember = (id) => {
-    confirmDelete(() => dispatch(deleteMember(id)));
+  const handleDeleteMember = async (id) => {
+    confirmDelete(async () => {
+      await dispatch(deleteMember(id)); // borra el socio
+      setLoading(true);
+      // Vuelve a cargar lista basada en el filtro seleccionado
+      switch (selectedFilter) {
+        case "activos":
+          await dispatch(getActiveMembers(currentDate));
+          break;
+        case "por expirar":
+          await dispatch(getExpiringSoonMembers(currentDate));
+          break;
+        case "expirados":
+          await dispatch(getExpiredMembers(currentDate));
+          break;
+        default:
+          break;
+      }
+      setLoading(false);
+    });
   };
   // function list members
   const activeMembersFilter = async () => {
