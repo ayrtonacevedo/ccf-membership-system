@@ -5,7 +5,6 @@
 /.pnp
 .pnp.js
 # clave Api
-src/firebaseConfig/firebase.js
 src/data
 
 # testing
