@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regla para la colección 'users'
+    match /users/{userId} {
+      allow read: if request.auth != null; // Solo usuarios autenticados pueden leer
+      allow write: if false; // Nadie puede escribir directamente
+    }
+
+    // Regla para otras colecciones
+    match /{document=**} {
+      allow read: if request.auth != null; // Usuarios autenticados pueden leer
+      allow write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "Admin"; // Solo Admins pueden escribir
+    }
+  }
+}
