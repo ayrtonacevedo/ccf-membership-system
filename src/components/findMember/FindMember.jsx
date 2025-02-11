@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
@@ -72,6 +73,17 @@ const FindMember = () => {
     setShowModal(false);
     setDni(""); // Limpiar el campo de búsqueda
   };
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "Enter" && showModal) {
+        handleClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [showModal]);
 
   return (
     <div className="bg-image">
