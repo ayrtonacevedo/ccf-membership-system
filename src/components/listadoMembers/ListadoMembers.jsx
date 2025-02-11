@@ -14,7 +14,6 @@ import {
 } from "../../utils/helpers";
 import "./listadoMembers.css";
 import { Link } from "react-router-dom";
-import { wait } from "@testing-library/user-event/dist/utils";
 
 const ListadoMembers = () => {
   const dispatch = useDispatch();
